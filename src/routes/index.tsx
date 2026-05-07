@@ -188,6 +188,9 @@ function App() {
   const [completed, setCompleted] = useState<Set<StepId>>(new Set());
 
   const [relayText, setRelayText] = useState("");
+  const [matchTime, setMatchTime] = useState("周五 19:00");
+  const [matchVenue, setMatchVenue] = useState("洋湖一号场");
+  const [editingMatch, setEditingMatch] = useState(false);
   const [players, setPlayers] = useState<Player[]>([]);
 
   const [captains, setCaptains] = useState<Record<TeamId, string | null>>({ red: null, green: null, white: null });
@@ -579,9 +582,41 @@ function App() {
           <div className="header-meta">
             <div className="match-pill">
               <span className="dot" />
-              <div>
-                <small>下一场</small>
-                <strong>周五 19:00 · 洋湖一号场</strong>
+              <div className="flex-1 min-w-0">
+                <small>下一场 · 点击编辑</small>
+                {editingMatch ? (
+                  <div className="flex gap-1.5 mt-1">
+                    <input
+                      className="input"
+                      style={{ padding: "4px 8px", fontSize: 12, width: 110 }}
+                      value={matchTime}
+                      onChange={(e) => setMatchTime(e.target.value)}
+                      placeholder="周五 19:00"
+                    />
+                    <input
+                      className="input"
+                      style={{ padding: "4px 8px", fontSize: 12, width: 130 }}
+                      value={matchVenue}
+                      onChange={(e) => setMatchVenue(e.target.value)}
+                      placeholder="场地"
+                    />
+                    <button
+                      className="btn btn-primary"
+                      style={{ padding: "4px 10px", fontSize: 12 }}
+                      onClick={() => setEditingMatch(false)}
+                    >
+                      完成
+                    </button>
+                  </div>
+                ) : (
+                  <strong
+                    onClick={() => setEditingMatch(true)}
+                    className="cursor-pointer hover:opacity-80"
+                    title="点击编辑"
+                  >
+                    {matchTime} · {matchVenue}
+                  </strong>
+                )}
               </div>
             </div>
             <div className="status-pill">
