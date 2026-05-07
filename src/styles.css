@@ -564,8 +564,7 @@
   content: "";
   position: absolute; inset: 0;
   background:
-    radial-gradient(ellipse 60% 80% at 100% 50%, oklch(0.86 0.18 95 / 0.12), transparent 70%),
-    linear-gradient(180deg, transparent, oklch(0 0 0 / 0.4));
+    radial-gradient(ellipse 60% 80% at 100% 50%, oklch(0.86 0.18 95 / 0.08), transparent 70%);
   pointer-events: none;
 }
 .header-row {
