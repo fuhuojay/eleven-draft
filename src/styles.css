@@ -87,24 +87,24 @@
   body {
     font-family: var(--font-sans);
     background-color: oklch(0.08 0.005 90);
+    min-height: 100vh;
+    position: relative;
+  }
+  /* Stadium tifo background — fixed to viewport so it stays identical across steps,
+     independent of page content height (avoids mobile resize jumps from URL bar / content changes). */
+  body::before {
+    content: "";
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-color: oklch(0.08 0.005 90);
     background-image:
       var(--bg-stadium, none),
       radial-gradient(ellipse 70% 60% at 50% 0%, oklch(0.86 0.18 95 / 0.18), transparent 60%),
       radial-gradient(ellipse 80% 50% at 50% 100%, oklch(0.5 0.18 30 / 0.18), transparent 60%),
-      linear-gradient(180deg, oklch(0.1 0.005 90) 0%, oklch(0.07 0.005 90) 60%, oklch(0.05 0.005 90) 100%);
-    background-size: cover, auto, auto, auto;
-    background-position: center top, center, center, center;
-    background-repeat: no-repeat;
-    background-attachment: fixed;
-    min-height: 100vh;
-    position: relative;
-  }
-  /* Tinted overlay so content stays readable — kept light to reveal tifo */
-  body::before {
-    content: "";
-    position: fixed; inset: 0; pointer-events: none; z-index: 0;
-    background:
+      linear-gradient(180deg, oklch(0.1 0.005 90 / 0.55) 0%, oklch(0.07 0.005 90 / 0.7) 60%, oklch(0.05 0.005 90 / 0.85) 100%),
       linear-gradient(180deg, oklch(0.05 0.005 90 / 0.05) 0%, oklch(0.05 0.005 90 / 0.25) 45%, oklch(0.04 0.005 90 / 0.78) 100%);
+    background-size: cover, auto, auto, auto, auto;
+    background-position: center top, center, center, center, center;
+    background-repeat: no-repeat;
   }
   /* Subtle yellow scanline / floodlight grid */
   body::after {
