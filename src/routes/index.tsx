@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import yellowWall from "@/assets/yellow-wall.jpg";
 
 // ---------- Types ----------
 type TeamId = "red" | "green" | "white";
@@ -521,40 +522,70 @@ function App() {
 
   const currentTeamCls = teamMeta[currentTeam].cls;
 
-  // ---------- Render ----------
+  // Inject stadium hero image as body background variable
+  useEffect(() => {
+    document.body.style.setProperty("--bg-stadium", `url(${yellowWall})`);
+    return () => { document.body.style.removeProperty("--bg-stadium"); };
+  }, []);
+
   return (
     <div className="min-h-screen">
-      {/* Header */}
-      <header className="px-4 md:px-8 pt-6 pb-4 flex items-center justify-between gap-4 flex-wrap">
-        <div className="flex items-center gap-3">
-          <div style={{
-            width: 44, height: 44, borderRadius: 10,
-            background: "linear-gradient(180deg, oklch(0.92 0.12 85), oklch(0.7 0.14 85))",
-            display: "grid", placeItems: "center",
-            boxShadow: "var(--shadow-glow-gold), 0 1px 0 oklch(1 0 0 / 0.4) inset",
-            border: "1px solid oklch(0.95 0.05 85 / 0.5)",
-          }}>
-            {/* Crown / shield mark — Madrid inspired */}
-            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="oklch(0.18 0.06 265)" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round">
-              <path d="M4 9l3 3 5-7 5 7 3-3v8a3 3 0 01-3 3H7a3 3 0 01-3-3V9z" fill="oklch(0.18 0.06 265 / 0.15)" />
-              <circle cx="7" cy="9" r="0.8" fill="oklch(0.18 0.06 265)" />
-              <circle cx="17" cy="9" r="0.8" fill="oklch(0.18 0.06 265)" />
-              <circle cx="12" cy="5" r="0.8" fill="oklch(0.18 0.06 265)" />
-            </svg>
-          </div>
-          <div>
-            <p className="eyebrow" style={{ color: "var(--color-gold)" }}>Hala Madrid · 8 v 8</p>
-            <h1 style={{ fontSize: 24, lineHeight: 1, letterSpacing: "0.04em" }}>
-              BERNABÉU <span style={{ color: "var(--color-gold)" }}>TACTICS</span>
-            </h1>
-          </div>
+      {/* Sponsor / club banner */}
+      <div className="sponsor-bar">
+        <div className="sponsor-bar-inner">
+          <span className="sponsor-label">官方赞助 · OFFICIAL SPONSOR</span>
+          <a href="http://www.gzjiy.com/" target="_blank" rel="noreferrer" className="sponsor-link">
+            <span className="sponsor-mark">JIY</span>
+            <span className="sponsor-name">济援专汽 · GUANGZHOU J.Y. SPECIAL AUTOMOBILE</span>
+          </a>
+          <span className="sponsor-meta">广州 · 消防车研发制造</span>
         </div>
-        <div className="status-pill">
-          {confirmed.length ? `${confirmed.length} 人已导入` : "等待导入名单"}
+      </div>
+
+      {/* Header */}
+      <header className="header-hero">
+        <div className="header-row">
+          <div className="club-id">
+            <div className="club-crest" aria-hidden>
+              <svg viewBox="0 0 64 64" width="48" height="48">
+                <defs>
+                  <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stopColor="oklch(0.95 0.16 95)" />
+                    <stop offset="1" stopColor="oklch(0.78 0.18 95)" />
+                  </linearGradient>
+                </defs>
+                <path d="M32 4 L58 14 V34 C58 48 47 57 32 60 C17 57 6 48 6 34 V14 Z"
+                  fill="url(#cg)" stroke="oklch(0.1 0 0)" strokeWidth="2.5" strokeLinejoin="round"/>
+                <text x="32" y="40" textAnchor="middle"
+                  fontFamily="Bebas Neue, sans-serif" fontSize="22"
+                  fill="oklch(0.1 0 0)" letterSpacing="1">JIY</text>
+                <rect x="14" y="44" width="36" height="3" fill="oklch(0.1 0 0)" />
+              </svg>
+            </div>
+            <div className="club-text">
+              <p className="eyebrow club-eyebrow">JIYUAN FC · 8 v 8 · WEEKLY CARNIVAL</p>
+              <h1 className="club-title">
+                济援<span>专汽</span> · 周五嘉年华
+              </h1>
+              <p className="club-sub">FRIDAY NIGHT FOOTBALL CARNIVAL — Yellow Wall Edition</p>
+            </div>
+          </div>
+          <div className="header-meta">
+            <div className="match-pill">
+              <span className="dot" />
+              <div>
+                <small>下一场</small>
+                <strong>周五 19:00 · 洋湖一号场</strong>
+              </div>
+            </div>
+            <div className="status-pill">
+              {confirmed.length ? `${confirmed.length} 人已导入` : "等待导入名单"}
+            </div>
+          </div>
         </div>
       </header>
 
-      <main className="px-4 md:px-8 pb-12 max-w-[1400px] mx-auto w-full flex flex-col gap-6">
+      <main className="px-4 md:px-8 pt-6 pb-12 max-w-[1400px] mx-auto w-full flex flex-col gap-6">
         <StepperNav step={step} setStep={setStep} completed={completed} />
 
         {/* IMPORT */}
@@ -838,8 +869,14 @@ function App() {
         )}
       </main>
 
-      <footer className="px-4 md:px-8 pb-6 pt-2 text-center text-xs text-muted-foreground">
-        Bernabéu Tactics · 8 人制 · ¡Hala Madrid! · 适配微信 H5
+      <footer className="site-footer">
+        <div className="flex items-center justify-center gap-3 flex-wrap">
+          <span>济援专汽 · 周五嘉年华</span>
+          <span className="dot-sep">·</span>
+          <a href="http://www.gzjiy.com/" target="_blank" rel="noreferrer">www.gzjiy.com</a>
+          <span className="dot-sep">·</span>
+          <span>Echte Liebe · 真爱足球</span>
+        </div>
       </footer>
     </div>
   );
