@@ -887,7 +887,7 @@ function App() {
                 ref={pitchWrapRef}
                 className={`pitch-wrap ${currentTeamCls} ${pitchFull ? "is-fullscreen" : ""} ${interactLocked ? "is-locked" : ""}`}
               >
-                <div className={pitchFull ? "pitch-stage" : "contents"}>
+                <div className="pitch-stage">
                   <div
                     ref={pitchRef}
                     className="pitch"
