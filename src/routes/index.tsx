@@ -383,7 +383,13 @@ function App() {
 
   // --- Lineup / pitch ---
   const pitchRef = useRef<HTMLDivElement>(null);
+  const pitchWrapRef = useRef<HTMLDivElement>(null);
   const [drawing, setDrawing] = useState<Annotation | null>(null);
+  const isMobile = useIsMobile();
+  const [pitchFull, setPitchFull] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  // touch users must enter fullscreen to interact with tactical board
+  const interactLocked = isMobile && !pitchFull;
 
   const team = teams[currentTeam];
   const board = tactics[currentTeam];
