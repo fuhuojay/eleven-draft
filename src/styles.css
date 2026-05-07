@@ -39,39 +39,46 @@
 }
 
 :root {
-  /* Deep stadium dark + neon turf accents */
-  --background: oklch(0.16 0.02 180);
-  --foreground: oklch(0.97 0.01 180);
-  --card: oklch(0.22 0.02 180 / 0.7);
-  --card-foreground: oklch(0.97 0.01 180);
-  --popover: oklch(0.2 0.02 180);
-  --popover-foreground: oklch(0.97 0.01 180);
-  --primary: oklch(0.78 0.18 145);
-  --primary-foreground: oklch(0.15 0.03 180);
-  --secondary: oklch(0.28 0.02 180 / 0.7);
-  --secondary-foreground: oklch(0.97 0.01 180);
-  --muted: oklch(0.25 0.015 180 / 0.6);
-  --muted-foreground: oklch(0.7 0.02 180);
-  --accent: oklch(0.82 0.15 85);
-  --accent-foreground: oklch(0.15 0.03 180);
+  /* Real Madrid · Bernabéu Night
+     White kit + royal navy + gold trim + spotlight glow */
+  --background: oklch(0.22 0.05 265);
+  --foreground: oklch(0.98 0.005 250);
+  --card: oklch(0.28 0.06 265 / 0.7);
+  --card-foreground: oklch(0.98 0.005 250);
+  --popover: oklch(0.25 0.06 265);
+  --popover-foreground: oklch(0.98 0.005 250);
+  --primary: oklch(0.82 0.14 85);            /* Madrid gold */
+  --primary-foreground: oklch(0.18 0.06 265);
+  --secondary: oklch(0.32 0.07 265 / 0.7);
+  --secondary-foreground: oklch(0.98 0.005 250);
+  --muted: oklch(0.3 0.05 265 / 0.6);
+  --muted-foreground: oklch(0.78 0.03 250);
+  --accent: oklch(0.6 0.18 265);             /* royal blue */
+  --accent-foreground: oklch(0.98 0.005 250);
   --destructive: oklch(0.65 0.22 25);
-  --destructive-foreground: oklch(0.98 0.01 180);
-  --border: oklch(0.97 0.01 180 / 0.1);
-  --input: oklch(0.25 0.02 180 / 0.6);
-  --ring: oklch(0.78 0.18 145 / 0.5);
+  --destructive-foreground: oklch(0.98 0.005 250);
+  --border: oklch(0.98 0.005 250 / 0.12);
+  --input: oklch(0.25 0.06 265 / 0.7);
+  --ring: oklch(0.82 0.14 85 / 0.5);
 
   --pitch: oklch(0.42 0.13 145);
-  --pitch-line: oklch(0.97 0.01 180 / 0.55);
+  --pitch-line: oklch(0.98 0.005 250 / 0.6);
   --team-red: oklch(0.62 0.21 25);
   --team-green: oklch(0.7 0.18 150);
-  --team-white: oklch(0.92 0.005 180);
-  --gold: oklch(0.82 0.15 85);
+  --team-white: oklch(0.96 0.005 250);
+  --gold: oklch(0.82 0.14 85);
+  --gold-soft: oklch(0.88 0.12 85);
+  --royal: oklch(0.45 0.2 265);
 
-  --shadow-elevated: 0 20px 50px -20px oklch(0 0 0 / 0.6),
-                     0 1px 0 oklch(1 0 0 / 0.05) inset;
-  --shadow-glow-green: 0 0 24px oklch(0.78 0.18 145 / 0.35);
-  --shadow-token: 0 8px 20px -8px oklch(0 0 0 / 0.7),
-                  0 1px 0 oklch(1 0 0 / 0.18) inset;
+  --shadow-elevated:
+    0 30px 60px -25px oklch(0 0 0 / 0.55),
+    0 1px 0 oklch(1 0 0 / 0.08) inset,
+    0 0 0 1px oklch(0.82 0.14 85 / 0.06);
+  --shadow-glow-gold: 0 0 30px oklch(0.82 0.14 85 / 0.4);
+  --shadow-glow-royal: 0 0 40px oklch(0.45 0.2 265 / 0.5);
+  --shadow-token:
+    0 10px 24px -8px oklch(0 0 0 / 0.7),
+    0 1px 0 oklch(1 0 0 / 0.22) inset;
 }
 
 @layer base {
@@ -79,13 +86,36 @@
   html, body { background-color: var(--color-background); color: var(--color-foreground); }
   body {
     font-family: var(--font-sans);
+    background-color: oklch(0.14 0.04 265);
     background-image:
-      radial-gradient(ellipse 80% 50% at 50% -10%, oklch(0.78 0.18 145 / 0.18), transparent 60%),
-      radial-gradient(ellipse 60% 40% at 100% 100%, oklch(0.55 0.2 250 / 0.12), transparent 60%),
-      linear-gradient(180deg, oklch(0.14 0.02 180), oklch(0.11 0.02 200));
+      conic-gradient(from 200deg at 18% -10%, transparent 0deg, oklch(0.98 0.005 250 / 0.14) 18deg, transparent 38deg),
+      conic-gradient(from 160deg at 82% -10%, transparent 0deg, oklch(0.82 0.14 85 / 0.12) 18deg, transparent 38deg),
+      radial-gradient(ellipse 70% 50% at 50% -20%, oklch(0.98 0.005 250 / 0.2), transparent 60%),
+      radial-gradient(ellipse 50% 40% at 0% 100%, oklch(0.45 0.2 265 / 0.3), transparent 60%),
+      radial-gradient(ellipse 60% 50% at 100% 80%, oklch(0.82 0.14 85 / 0.18), transparent 60%),
+      linear-gradient(180deg, oklch(0.2 0.07 265) 0%, oklch(0.13 0.05 265) 55%, oklch(0.1 0.04 265) 100%);
     background-attachment: fixed;
     min-height: 100vh;
+    position: relative;
   }
+  body::before {
+    content: "";
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent 0 38px, oklch(0.98 0.005 250 / 0.025) 38px 39px),
+      repeating-linear-gradient(90deg, transparent 0 38px, oklch(0.98 0.005 250 / 0.025) 38px 39px);
+    -webkit-mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black, transparent 80%);
+            mask-image: radial-gradient(ellipse 80% 70% at 50% 40%, black, transparent 80%);
+  }
+  body::after {
+    content: "";
+    position: fixed; inset: 0; pointer-events: none; z-index: 0;
+    background:
+      radial-gradient(circle at 20% 12%, oklch(0.98 0.005 250 / 0.18), transparent 6%),
+      radial-gradient(circle at 80% 12%, oklch(0.98 0.005 250 / 0.18), transparent 6%);
+    filter: blur(3px);
+  }
+  main, header, footer { position: relative; z-index: 1; }
   h1,h2,h3 { font-family: var(--font-display); letter-spacing: 0.02em; }
 }
 
