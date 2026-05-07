@@ -193,8 +193,8 @@ function App() {
   const [captains, setCaptains] = useState<Record<TeamId, string | null>>({ red: null, green: null, white: null });
   const [draftOrder, setDraftOrder] = useState<TeamId[]>(["red", "green", "white"]);
   const [gkOrder, setGkOrder] = useState<TeamId[]>(["red", "green", "white"]);
-  const [draftOrderText, setDraftOrderText] = useState("red,green,white");
-  const [gkOrderText, setGkOrderText] = useState("red,green,white");
+  const [draftOrderText, setDraftOrderText] = useState("红,绿,白");
+  const [gkOrderText, setGkOrderText] = useState("红,绿,白");
 
   const [teams, setTeams] = useState(emptyTeams);
   const [draftQueue, setDraftQueue] = useState<{ team: TeamId; type: "player" | "gk" }[]>([]);
@@ -229,8 +229,14 @@ function App() {
   const toggleGk = (id: string) => setPlayers((ps) => ps.map((p) => p.id === id ? { ...p, isGk: !p.isGk } : p));
 
   const parseOrder = (v: string): TeamId[] => {
-    const valid = new Set(TEAMS);
-    const arr = v.split(",").map((x) => x.trim()).filter((x): x is TeamId => valid.has(x as TeamId));
+    const map: Record<string, TeamId> = {
+      red: "red", green: "green", white: "white",
+      "红": "red", "绿": "green", "白": "white",
+      "红队": "red", "绿队": "green", "白队": "white",
+    };
+    const arr = v.split(/[,，、\s]+/).map((x) => x.trim()).filter(Boolean)
+      .map((x) => map[x.toLowerCase()] || map[x])
+      .filter((x): x is TeamId => !!x);
     return arr.length ? arr : ["red", "green", "white"];
   };
 
@@ -673,7 +679,7 @@ function App() {
                   <span className="text-xs text-muted-foreground mb-1.5 block">门将顺序</span>
                   <input className="input" value={gkOrderText} onChange={(e) => setGkOrderText(e.target.value)} />
                 </label>
-                <p className="text-xs text-muted-foreground">填 red,green,white 自定义循环顺序。</p>
+                <p className="text-xs text-muted-foreground">填 红,绿,白 自定义循环顺序。</p>
               </div>
               <div className="glass p-4" style={{ background: "oklch(0.97 0.01 180 / 0.025)" }}>
                 <h3 className="eyebrow mb-3">门将池</h3>
