@@ -474,7 +474,7 @@
 .tool-btn:hover { color: var(--color-foreground); border-color: oklch(0.97 0.01 180 / 0.18); }
 .tool-btn.is-active {
   color: var(--color-primary-foreground);
-  background: linear-gradient(180deg, oklch(0.82 0.18 145), oklch(0.7 0.18 145));
+  background: linear-gradient(180deg, oklch(0.9 0.14 85), oklch(0.74 0.14 85));
   border-color: transparent;
   box-shadow: 0 4px 12px -4px oklch(0.82 0.14 85 / 0.5);
 }
