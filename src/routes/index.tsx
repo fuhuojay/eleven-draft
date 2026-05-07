@@ -651,19 +651,18 @@ function App() {
             <div className="pitch-mobile-toolbar">
               <div className="pmt-tools">
                 {([
-                  ["attack", "进攻", ""],
-                  ["defense", "防守", "拖动绘制回收与协防路线"],
-                  ["area", "区域", "拖出矩形标记控制或保护区"],
-                  ["note", "标注", "点击球场放置文字提醒"],
-                  ["erase", "擦除", "点击已有标注即可删除"],
-                ] as [Tool, string, string][]).map(([id, label, desc]) => (
+                  ["attack", "进攻"],
+                  ["defense", "防守"],
+                  ["area", "区域"],
+                  ["note", "标注"],
+                  ["erase", "擦除"],
+                ] as [Tool, string][]).map(([id, label]) => (
                   <button
                     key={id}
                     className={`pmt-btn ${tool === id ? "is-active" : ""}`}
                     onClick={() => setTool(id)}
                   >
                     <span className="pmt-label">{label}</span>
-                    <span className="pmt-desc">{desc}</span>
                   </button>
                 ))}
               </div>
