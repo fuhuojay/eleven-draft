@@ -528,19 +528,25 @@ function App() {
       <header className="px-4 md:px-8 pt-6 pb-4 flex items-center justify-between gap-4 flex-wrap">
         <div className="flex items-center gap-3">
           <div style={{
-            width: 38, height: 38, borderRadius: 10,
-            background: "linear-gradient(135deg, var(--color-primary), oklch(0.5 0.15 145))",
+            width: 44, height: 44, borderRadius: 10,
+            background: "linear-gradient(180deg, oklch(0.92 0.12 85), oklch(0.7 0.14 85))",
             display: "grid", placeItems: "center",
-            boxShadow: "var(--shadow-glow-green)",
+            boxShadow: "var(--shadow-glow-gold), 0 1px 0 oklch(1 0 0 / 0.4) inset",
+            border: "1px solid oklch(0.95 0.05 85 / 0.5)",
           }}>
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="oklch(0.15 0.03 180)" strokeWidth="2.2">
-              <circle cx="12" cy="12" r="9" />
-              <path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4" />
+            {/* Crown / shield mark — Madrid inspired */}
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="oklch(0.18 0.06 265)" strokeWidth="1.8" strokeLinejoin="round" strokeLinecap="round">
+              <path d="M4 9l3 3 5-7 5 7 3-3v8a3 3 0 01-3 3H7a3 3 0 01-3-3V9z" fill="oklch(0.18 0.06 265 / 0.15)" />
+              <circle cx="7" cy="9" r="0.8" fill="oklch(0.18 0.06 265)" />
+              <circle cx="17" cy="9" r="0.8" fill="oklch(0.18 0.06 265)" />
+              <circle cx="12" cy="5" r="0.8" fill="oklch(0.18 0.06 265)" />
             </svg>
           </div>
           <div>
-            <p className="eyebrow">8人制 · 红绿白三队</p>
-            <h1 style={{ fontSize: 22, lineHeight: 1 }}>战术台 · TACTICS DECK</h1>
+            <p className="eyebrow" style={{ color: "var(--color-gold)" }}>Hala Madrid · 8 v 8</p>
+            <h1 style={{ fontSize: 24, lineHeight: 1, letterSpacing: "0.04em" }}>
+              BERNABÉU <span style={{ color: "var(--color-gold)" }}>TACTICS</span>
+            </h1>
           </div>
         </div>
         <div className="status-pill">
