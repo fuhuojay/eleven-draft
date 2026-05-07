@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { toPng } from "html-to-image";
 import yellowWall from "@/assets/yellow-wall.jpg";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // ---------- Types ----------
 type TeamId = "red" | "green" | "white";
