@@ -1,5 +1,7 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import { toPng } from "html-to-image";
 import yellowWall from "@/assets/yellow-wall.jpg";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // ---------- Types ----------
 type TeamId = "red" | "green" | "white";
@@ -381,7 +383,13 @@ function App() {
 
   // --- Lineup / pitch ---
   const pitchRef = useRef<HTMLDivElement>(null);
+  const pitchWrapRef = useRef<HTMLDivElement>(null);
   const [drawing, setDrawing] = useState<Annotation | null>(null);
+  const isMobile = useIsMobile();
+  const [pitchFull, setPitchFull] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  // touch users must enter fullscreen to interact with tactical board
+  const interactLocked = isMobile && !pitchFull;
 
   const team = teams[currentTeam];
   const board = tactics[currentTeam];
@@ -421,6 +429,7 @@ function App() {
   };
 
   const onTokenPointerDown = (e: React.PointerEvent, id: string) => {
+    if (interactLocked) return;
     e.stopPropagation();
     const el = e.currentTarget as HTMLElement;
     el.setPointerCapture(e.pointerId);
@@ -457,6 +466,7 @@ function App() {
   };
 
   const onPitchPointerDown = (e: React.PointerEvent) => {
+    if (interactLocked) return;
     const target = e.target as HTMLElement;
     if (target.closest(".player-token")) return;
     const mark = target.closest<HTMLElement>(".board-mark");
@@ -526,6 +536,39 @@ function App() {
       setTactics((prev) => ({ ...prev, [currentTeam]: { label: parsed.label || "", annotations: parsed.annotations } }));
     } catch { alert("导入失败，请确认 JSON 来自本战术板。"); }
   };
+
+  const exportPitchImage = async () => {
+    if (!pitchWrapRef.current) return;
+    setExporting(true);
+    try {
+      const dataUrl = await toPng(pitchWrapRef.current, {
+        pixelRatio: 2,
+        backgroundColor: "#0a0a0a",
+        cacheBust: true,
+      });
+      const link = document.createElement("a");
+      link.download = `阵容-${teamMeta[currentTeam].name}-${Date.now()}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error(err);
+      alert("导出失败，请稍后重试。");
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!pitchFull) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [pitchFull]);
+
+  const lineupComplete = useMemo(
+    () => TEAMS.every((t) => teams[t].players.length + (teams[t].gk ? 1 : 0) >= 6),
+    [teams]
+  );
 
   // Sync annotation text to board on team change
   useEffect(() => { setAnnotationText(tactics[currentTeam].label); }, [currentTeam]); // eslint-disable-line
@@ -810,14 +853,19 @@ function App() {
           <section className="glass p-5 md:p-7">
             <div className="section-head">
               <div>
-                <h2>横屏阵容 · 战术板</h2>
-                <p>选择阵型一键排布或自由拖拽。手机请横屏使用以获得最佳体验。</p>
+                <h2>阵容 · 战术板</h2>
+                <p>选择阵型一键排布或自由拖拽。手机/平板请点击球场右下角的 <strong>放大</strong> 按钮，进入全屏模式后再使用战术工具，避免误触。</p>
               </div>
               <div className="flex gap-2 flex-wrap">
                 {Object.keys(formationSlots).map((f) => (
                   <button key={f} className="btn btn-ghost" onClick={() => applyFormation(f)}>{f}</button>
                 ))}
                 <button className="btn btn-ghost" onClick={resetPositions}>自由重排</button>
+                {lineupComplete && (
+                  <button className="btn btn-primary" onClick={exportPitchImage} disabled={exporting}>
+                    {exporting ? "导出中…" : "📸 导出阵容图"}
+                  </button>
+                )}
               </div>
             </div>
 
@@ -833,9 +881,12 @@ function App() {
               ))}
             </div>
 
-            <div className="grid lg:grid-cols-[1.6fr_1fr] gap-5">
+            <div className={`grid ${pitchFull ? "" : "lg:grid-cols-[1.6fr_1fr]"} gap-5`}>
               {/* Pitch */}
-              <div className={`pitch-wrap ${currentTeamCls}`}>
+              <div
+                ref={pitchWrapRef}
+                className={`pitch-wrap ${currentTeamCls} ${pitchFull ? "is-fullscreen" : ""} ${interactLocked ? "is-locked" : ""}`}
+              >
                 <div
                   ref={pitchRef}
                   className="pitch"
@@ -858,9 +909,65 @@ function App() {
                     </div>
                   ))}
                 </div>
+
+                {interactLocked && (
+                  <div className="pitch-lock-hint">点击右下角 ⤢ 放大球场以使用战术工具</div>
+                )}
+
+                <button
+                  type="button"
+                  className="pitch-fullscreen-btn"
+                  onClick={() => setPitchFull((v) => !v)}
+                  aria-label={pitchFull ? "退出全屏" : "放大球场"}
+                  title={pitchFull ? "退出全屏" : "放大球场"}
+                >
+                  {pitchFull ? "✕" : "⤢"}
+                </button>
+
+                {pitchFull && (
+                  <div className="pitch-mobile-toolbar">
+                    <div className="pmt-tools">
+                      {([
+                        ["attack", "进攻", "在球场拖动 · 表示传球或跑位方向"],
+                        ["defense", "防守", "在球场拖动 · 表示防守回收路径"],
+                        ["area", "区域", "拖出矩形 · 标记控制/保护区域"],
+                        ["note", "标注", "点击放置文字提示"],
+                        ["erase", "擦除", "点击已有标注将其删除"],
+                      ] as [Tool, string, string][]).map(([id, label, desc]) => (
+                        <button key={id}
+                          className={`pmt-btn ${tool === id ? "is-active" : ""}`}
+                          onClick={() => setTool(id)}>
+                          <span className="pmt-label">{label}</span>
+                          <span className="pmt-desc">{desc}</span>
+                        </button>
+                      ))}
+                    </div>
+                    <div className="pmt-row">
+                      <input
+                        className="input"
+                        style={{ flex: 1, fontSize: 12, padding: "8px 10px" }}
+                        placeholder="标注文字（如：边路推进）"
+                        value={annotationText}
+                        onChange={(e) => setAnnotationText(e.target.value)}
+                      />
+                      <button className="btn btn-ghost" style={{ padding: "8px 10px" }} onClick={() => {
+                        setTactics((prev) => ({
+                          ...prev, [currentTeam]: { ...prev[currentTeam], annotations: prev[currentTeam].annotations.slice(0, -1) },
+                        }));
+                      }}>撤销</button>
+                      <button className="btn btn-ghost" style={{ padding: "8px 10px" }} onClick={() => setTactics((p) => ({ ...p, [currentTeam]: { ...p[currentTeam], annotations: [] } }))}>清空</button>
+                      {lineupComplete && (
+                        <button className="btn btn-primary" style={{ padding: "8px 10px" }} onClick={exportPitchImage} disabled={exporting}>
+                          {exporting ? "…" : "📸导出"}
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Tactics panel */}
+              {!pitchFull && (
               <aside className="flex flex-col gap-4">
                 <div className="glass p-4" style={{ background: "oklch(0.97 0.01 180 / 0.025)" }}>
                   <h3 className="eyebrow mb-3">战术工具 · {teamMeta[currentTeam].name}</h3>
@@ -917,6 +1024,7 @@ function App() {
                   </div>
                 </div>
               </aside>
+              )}
             </div>
           </section>
         )}

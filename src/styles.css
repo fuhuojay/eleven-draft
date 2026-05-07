@@ -394,6 +394,92 @@
   .pitch-lines .pitch-svg-v { display: block; }
 }
 
+/* Fullscreen pitch overlay */
+.pitch-wrap { position: relative; }
+.pitch-fullscreen-btn {
+  position: absolute;
+  right: 10px; bottom: 10px;
+  width: 40px; height: 40px;
+  border-radius: 8px;
+  background: oklch(0.1 0.02 180 / 0.85);
+  border: 1px solid oklch(0.86 0.18 95 / 0.5);
+  color: var(--color-gold);
+  font-size: 18px;
+  display: grid; place-items: center;
+  cursor: pointer;
+  z-index: 30;
+  box-shadow: 0 4px 12px oklch(0 0 0 / 0.4);
+}
+.pitch-fullscreen-btn:hover { background: oklch(0.15 0.02 180 / 0.95); }
+
+.pitch-wrap.is-locked .pitch { pointer-events: none; }
+.pitch-wrap.is-locked .player-token { pointer-events: none; }
+
+.pitch-lock-hint {
+  position: absolute;
+  top: 10px; left: 50%;
+  transform: translateX(-50%);
+  background: oklch(0.1 0.02 180 / 0.9);
+  color: var(--color-gold);
+  font-size: 11px; font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid oklch(0.86 0.18 95 / 0.4);
+  z-index: 25;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+.pitch-wrap.is-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  border-radius: 0;
+  background: oklch(0.05 0 0);
+  display: flex; flex-direction: column;
+}
+.pitch-wrap.is-fullscreen .pitch {
+  flex: 1;
+  aspect-ratio: auto;
+  height: 100%;
+}
+
+/* Mobile toolbar inside fullscreen */
+.pitch-mobile-toolbar {
+  position: relative;
+  background: oklch(0.08 0.005 90 / 0.95);
+  border-top: 1px solid oklch(0.86 0.18 95 / 0.3);
+  padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+  display: flex; flex-direction: column; gap: 6px;
+  z-index: 20;
+}
+.pmt-tools {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+}
+.pmt-btn {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  padding: 6px 2px;
+  border-radius: 6px;
+  background: oklch(0.97 0.01 180 / 0.05);
+  border: 1px solid var(--color-border);
+  color: var(--color-foreground);
+  cursor: pointer;
+  font-family: inherit;
+  min-height: 48px;
+}
+.pmt-btn .pmt-label { font-size: 12px; font-weight: 700; }
+.pmt-btn .pmt-desc { font-size: 9px; line-height: 1.1; color: var(--color-muted-foreground); text-align: center; }
+.pmt-btn.is-active {
+  background: linear-gradient(180deg, oklch(0.9 0.14 85), oklch(0.74 0.14 85));
+  border-color: transparent;
+  color: oklch(0.18 0.04 60);
+}
+.pmt-btn.is-active .pmt-desc { color: oklch(0.18 0.04 60 / 0.8); }
+.pmt-row { display: flex; gap: 4px; align-items: center; }
+
+
 .player-token {
   position: absolute;
   display: flex; flex-direction: column; align-items: center; gap: 4px;
