@@ -436,24 +436,24 @@
 }
 .board-arrow {
   height: 3px;
-  background: oklch(0.78 0.18 145);
+  background: var(--color-gold);
   transform-origin: 0 50%;
   border-radius: 2px;
-  box-shadow: 0 0 8px oklch(0.78 0.18 145 / 0.5);
+  box-shadow: 0 0 10px oklch(0.82 0.14 85 / 0.6);
 }
 .board-arrow::after {
   content: ""; position: absolute; right: -2px; top: 50%;
   width: 0; height: 0;
-  border-left: 10px solid oklch(0.78 0.18 145);
+  border-left: 10px solid var(--color-gold);
   border-top: 6px solid transparent;
   border-bottom: 6px solid transparent;
   transform: translateY(-50%);
 }
 .board-arrow.defense {
-  background: oklch(0.7 0.2 250);
-  box-shadow: 0 0 8px oklch(0.7 0.2 250 / 0.5);
+  background: oklch(0.7 0.2 265);
+  box-shadow: 0 0 10px oklch(0.7 0.2 265 / 0.6);
 }
-.board-arrow.defense::after { border-left-color: oklch(0.7 0.2 250); }
+.board-arrow.defense::after { border-left-color: oklch(0.7 0.2 265); }
 .board-arrow span {
   position: absolute; left: 50%; top: -18px; transform: translateX(-50%);
   font-size: 10px; padding: 1px 6px; border-radius: 3px;
