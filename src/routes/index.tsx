@@ -229,8 +229,14 @@ function App() {
   const toggleGk = (id: string) => setPlayers((ps) => ps.map((p) => p.id === id ? { ...p, isGk: !p.isGk } : p));
 
   const parseOrder = (v: string): TeamId[] => {
-    const valid = new Set(TEAMS);
-    const arr = v.split(",").map((x) => x.trim()).filter((x): x is TeamId => valid.has(x as TeamId));
+    const map: Record<string, TeamId> = {
+      red: "red", green: "green", white: "white",
+      "红": "red", "绿": "green", "白": "white",
+      "红队": "red", "绿队": "green", "白队": "white",
+    };
+    const arr = v.split(/[,，、\s]+/).map((x) => x.trim()).filter(Boolean)
+      .map((x) => map[x.toLowerCase()] || map[x])
+      .filter((x): x is TeamId => !!x);
     return arr.length ? arr : ["red", "green", "white"];
   };
 
