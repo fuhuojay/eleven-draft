@@ -537,6 +537,39 @@ function App() {
     } catch { alert("导入失败，请确认 JSON 来自本战术板。"); }
   };
 
+  const exportPitchImage = async () => {
+    if (!pitchWrapRef.current) return;
+    setExporting(true);
+    try {
+      const dataUrl = await toPng(pitchWrapRef.current, {
+        pixelRatio: 2,
+        backgroundColor: "#0a0a0a",
+        cacheBust: true,
+      });
+      const link = document.createElement("a");
+      link.download = `阵容-${teamMeta[currentTeam].name}-${Date.now()}.png`;
+      link.href = dataUrl;
+      link.click();
+    } catch (err) {
+      console.error(err);
+      alert("导出失败，请稍后重试。");
+    } finally {
+      setExporting(false);
+    }
+  };
+
+  useEffect(() => {
+    if (!pitchFull) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => { document.body.style.overflow = prev; };
+  }, [pitchFull]);
+
+  const lineupComplete = useMemo(
+    () => TEAMS.every((t) => teams[t].players.length + (teams[t].gk ? 1 : 0) >= 6),
+    [teams]
+  );
+
   // Sync annotation text to board on team change
   useEffect(() => { setAnnotationText(tactics[currentTeam].label); }, [currentTeam]); // eslint-disable-line
 
