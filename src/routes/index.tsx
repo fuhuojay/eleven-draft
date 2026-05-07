@@ -651,7 +651,7 @@ function App() {
             <div className="pitch-mobile-toolbar">
               <div className="pmt-tools">
                 {([
-                  ["attack", "进攻", "点击即可删除"],
+                  ["attack", "进攻", ""],
                   ["defense", "防守", "拖动绘制回收与协防路线"],
                   ["area", "区域", "拖出矩形标记控制或保护区"],
                   ["note", "标注", "点击球场放置文字提醒"],
