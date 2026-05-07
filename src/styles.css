@@ -162,8 +162,8 @@
 .step-pill.is-active {
   color: var(--color-foreground);
   border-color: var(--color-primary);
-  background: linear-gradient(180deg, oklch(0.78 0.18 145 / 0.18), oklch(0.78 0.18 145 / 0.05));
-  box-shadow: var(--shadow-glow-green);
+  background: linear-gradient(180deg, oklch(0.82 0.14 85 / 0.22), oklch(0.82 0.14 85 / 0.05));
+  box-shadow: var(--shadow-glow-gold);
 }
 .step-pill.is-active .num {
   background: var(--color-primary);
@@ -186,10 +186,10 @@
 .btn-primary {
   background: linear-gradient(180deg, oklch(0.82 0.18 145), oklch(0.7 0.18 145));
   color: var(--color-primary-foreground);
-  box-shadow: 0 6px 16px -8px oklch(0.78 0.18 145 / 0.6),
+  box-shadow: 0 6px 16px -8px oklch(0.82 0.14 85 / 0.55),
               0 1px 0 oklch(1 0 0 / 0.25) inset;
 }
-.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 22px -8px oklch(0.78 0.18 145 / 0.7), 0 1px 0 oklch(1 0 0 / 0.25) inset; }
+.btn-primary:hover { transform: translateY(-1px); box-shadow: 0 10px 22px -8px oklch(0.82 0.14 85 / 0.65), 0 1px 0 oklch(1 0 0 / 0.25) inset; }
 .btn-ghost {
   background: oklch(0.97 0.01 180 / 0.04);
   color: var(--color-foreground);
@@ -218,7 +218,7 @@
 .input:focus, .textarea:focus, .select:focus {
   outline: none;
   border-color: var(--color-primary);
-  box-shadow: 0 0 0 3px oklch(0.78 0.18 145 / 0.18);
+  box-shadow: 0 0 0 3px oklch(0.82 0.14 85 / 0.22);
 }
 .textarea { resize: vertical; min-height: 180px; line-height: 1.6; font-family: ui-monospace, "SF Mono", Menlo, monospace; }
 
@@ -346,7 +346,7 @@
   font-family: var(--font-display);
   font-size: 36px; line-height: 1;
   color: var(--color-primary);
-  text-shadow: 0 0 18px oklch(0.78 0.18 145 / 0.6);
+  text-shadow: 0 0 18px oklch(0.82 0.14 85 / 0.6);
   min-width: 60px; text-align: right;
 }
 .draft-clock .timer.warn { color: var(--color-destructive); text-shadow: 0 0 18px oklch(0.65 0.22 25 / 0.6); }
@@ -476,7 +476,7 @@
   color: var(--color-primary-foreground);
   background: linear-gradient(180deg, oklch(0.82 0.18 145), oklch(0.7 0.18 145));
   border-color: transparent;
-  box-shadow: 0 4px 12px -4px oklch(0.78 0.18 145 / 0.5);
+  box-shadow: 0 4px 12px -4px oklch(0.82 0.14 85 / 0.5);
 }
 
 /* Bench chip */
