@@ -679,7 +679,7 @@ function App() {
                   <span className="text-xs text-muted-foreground mb-1.5 block">门将顺序</span>
                   <input className="input" value={gkOrderText} onChange={(e) => setGkOrderText(e.target.value)} />
                 </label>
-                <p className="text-xs text-muted-foreground">填 red,green,white 自定义循环顺序。</p>
+                <p className="text-xs text-muted-foreground">填 红,绿,白 自定义循环顺序。</p>
               </div>
               <div className="glass p-4" style={{ background: "oklch(0.97 0.01 180 / 0.025)" }}>
                 <h3 className="eyebrow mb-3">门将池</h3>
