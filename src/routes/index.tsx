@@ -159,20 +159,32 @@ function PlayerCard({
 function PitchLines() {
   return (
     <div className="pitch-lines">
-      <svg viewBox="0 0 160 90" preserveAspectRatio="none">
+      <svg className="pitch-svg-h" viewBox="0 0 160 90" preserveAspectRatio="none">
         <g fill="none" stroke="oklch(0.97 0.01 180 / 0.55)" strokeWidth="0.4">
           <rect x="2" y="2" width="156" height="86" rx="0.6" />
           <line x1="80" y1="2" x2="80" y2="88" />
           <circle cx="80" cy="45" r="9" />
           <circle cx="80" cy="45" r="0.6" fill="oklch(0.97 0.01 180 / 0.55)" />
-          {/* penalty boxes */}
           <rect x="2" y="22" width="22" height="46" />
           <rect x="2" y="32" width="10" height="26" />
           <rect x="136" y="22" width="22" height="46" />
           <rect x="148" y="32" width="10" height="26" />
-          {/* goal */}
           <rect x="0" y="38" width="2" height="14" />
           <rect x="158" y="38" width="2" height="14" />
+        </g>
+      </svg>
+      <svg className="pitch-svg-v" viewBox="0 0 90 160" preserveAspectRatio="none">
+        <g fill="none" stroke="oklch(0.97 0.01 180 / 0.55)" strokeWidth="0.4">
+          <rect x="2" y="2" width="86" height="156" rx="0.6" />
+          <line x1="2" y1="80" x2="88" y2="80" />
+          <circle cx="45" cy="80" r="9" />
+          <circle cx="45" cy="80" r="0.6" fill="oklch(0.97 0.01 180 / 0.55)" />
+          <rect x="22" y="2" width="46" height="22" />
+          <rect x="32" y="2" width="26" height="10" />
+          <rect x="22" y="136" width="46" height="22" />
+          <rect x="32" y="148" width="26" height="10" />
+          <rect x="38" y="0" width="14" height="2" />
+          <rect x="38" y="158" width="14" height="2" />
         </g>
       </svg>
     </div>
