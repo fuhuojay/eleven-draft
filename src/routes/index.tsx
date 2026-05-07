@@ -1024,6 +1024,7 @@ function App() {
                   </div>
                 </div>
               </aside>
+              )}
             </div>
           </section>
         )}
