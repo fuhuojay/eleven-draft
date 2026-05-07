@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState, useCallback } from "react";
+import yellowWall from "@/assets/yellow-wall.jpg";
 
 // ---------- Types ----------
 type TeamId = "red" | "green" | "white";
