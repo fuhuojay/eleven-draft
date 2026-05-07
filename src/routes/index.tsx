@@ -585,6 +585,174 @@ function App() {
   }, [team, findPlayer]);
 
   const currentTeamCls = teamMeta[currentTeam].cls;
+  const isPitchFocus = step === "lineup" && pitchFull;
+
+  const pitchBoard = (
+    <>
+      {!pitchFull && (
+        <div className="flex gap-2 mb-4 flex-wrap">
+          {TEAMS.map((t) => (
+            <button
+              key={t}
+              className={`team-tab ${teamMeta[t].cls} ${currentTeam === t ? "is-active" : ""}`}
+              onClick={() => setCurrentTeam(t)}
+            >
+              {teamMeta[t].name}
+            </button>
+          ))}
+        </div>
+      )}
+
+      <div className={pitchFull ? "pitch-focus-shell" : "grid lg:grid-cols-[1.6fr_1fr] gap-5"}>
+        <div
+          ref={pitchWrapRef}
+          className={`pitch-wrap ${currentTeamCls} ${pitchFull ? "is-fullscreen" : ""} ${interactLocked ? "is-locked" : ""}`}
+        >
+          <div className="pitch-stage">
+            <div
+              ref={pitchRef}
+              className="pitch"
+              onPointerDown={onPitchPointerDown}
+              onPointerMove={onPitchPointerMove}
+              onPointerUp={onPitchPointerUp}
+            >
+              <PitchLines />
+              {board.annotations.map(renderAnnotation)}
+              {drawing && renderAnnotation({ ...drawing, id: "_d" })}
+              {tokens.map(({ p, pos, isGk, id }) => (
+                <div
+                  key={id}
+                  className={`player-token ${currentTeamCls} ${isGk ? "is-gk" : ""}`}
+                  style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: "translate(-50%, -50%)" }}
+                  onPointerDown={(e) => onTokenPointerDown(e, id)}
+                >
+                  <div className="disc">{isGk ? "GK" : p.name.slice(0, 2)}</div>
+                  <div className="label">{p.name}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {interactLocked && (
+            <div className="pitch-lock-hint">点击右下角 ⤢ 放大球场以使用战术工具</div>
+          )}
+
+          <button
+            type="button"
+            className="pitch-fullscreen-btn"
+            onClick={() => setPitchFull((v) => !v)}
+            aria-label={pitchFull ? "退出全屏" : "放大球场"}
+            title={pitchFull ? "退出全屏" : "放大球场"}
+          >
+            {pitchFull ? "✕" : "⤢"}
+          </button>
+
+          {pitchFull && (
+            <div className="pitch-mobile-toolbar">
+              <div className="pmt-tools">
+                {([
+                  ["attack", "进攻", "拖动绘制传球或跑位方向"],
+                  ["defense", "防守", "拖动绘制回收与协防路线"],
+                  ["area", "区域", "拖出矩形标记控制或保护区"],
+                  ["note", "标注", "点击球场放置文字提醒"],
+                  ["erase", "擦除", "点击已有标注即可删除"],
+                ] as [Tool, string, string][]).map(([id, label, desc]) => (
+                  <button
+                    key={id}
+                    className={`pmt-btn ${tool === id ? "is-active" : ""}`}
+                    onClick={() => setTool(id)}
+                  >
+                    <span className="pmt-label">{label}</span>
+                    <span className="pmt-desc">{desc}</span>
+                  </button>
+                ))}
+              </div>
+              <div className="pmt-row">
+                <input
+                  className="input"
+                  style={{ flex: 1, fontSize: 12, padding: "8px 10px" }}
+                  placeholder="标注文字（如：边路推进）"
+                  value={annotationText}
+                  onChange={(e) => setAnnotationText(e.target.value)}
+                  onBlur={() => setTactics((prev) => ({ ...prev, [currentTeam]: { ...prev[currentTeam], label: annotationText } }))}
+                />
+                <button className="btn btn-ghost" style={{ padding: "8px 10px" }} onClick={() => {
+                  setTactics((prev) => ({
+                    ...prev, [currentTeam]: { ...prev[currentTeam], annotations: prev[currentTeam].annotations.slice(0, -1) },
+                  }));
+                }}>撤销</button>
+                <button className="btn btn-ghost" style={{ padding: "8px 10px" }} onClick={() => setTactics((p) => ({ ...p, [currentTeam]: { ...p[currentTeam], annotations: [] } }))}>清空</button>
+                {lineupComplete && (
+                  <button className="btn btn-primary" style={{ padding: "8px 10px" }} onClick={exportPitchImage} disabled={exporting}>
+                    {exporting ? "…" : "📸导出"}
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {!pitchFull && (
+          <aside className="flex flex-col gap-4">
+            <div className="glass p-4" style={{ background: "oklch(0.97 0.01 180 / 0.025)" }}>
+              <h3 className="eyebrow mb-3">战术工具 · {teamMeta[currentTeam].name}</h3>
+              <div className="grid grid-cols-3 gap-2">
+                {([
+                  ["attack", "进攻箭头"],
+                  ["defense", "防守回收"],
+                  ["area", "区域框"],
+                  ["note", "文字标注"],
+                  ["erase", "橡皮擦"],
+                ] as [Tool, string][]).map(([id, label]) => (
+                  <button key={id}
+                    className={`tool-btn ${tool === id ? "is-active" : ""}`}
+                    onClick={() => setTool(id)}>{label}</button>
+                ))}
+              </div>
+              <label className="block mt-3">
+                <span className="text-xs text-muted-foreground mb-1.5 block">标注文字</span>
+                <input
+                  className="input"
+                  placeholder="例：边路推进、弱侧包抄、回收保护"
+                  value={annotationText}
+                  onChange={(e) => setAnnotationText(e.target.value)}
+                  onBlur={() => setTactics((prev) => ({ ...prev, [currentTeam]: { ...prev[currentTeam], label: annotationText } }))}
+                />
+              </label>
+              <div className="flex flex-wrap gap-2 mt-3">
+                <button className="btn btn-ghost" onClick={() => {
+                  setTactics((prev) => ({
+                    ...prev, [currentTeam]: { ...prev[currentTeam], annotations: prev[currentTeam].annotations.slice(0, -1) },
+                  }));
+                }}>撤销</button>
+                <button className="btn btn-ghost" onClick={exportBoard}>复制战术</button>
+                <button className="btn btn-ghost" onClick={importBoard}>导入战术</button>
+                <button className="btn btn-ghost" onClick={() => setTactics((p) => ({ ...p, [currentTeam]: { ...p[currentTeam], annotations: [] } }))}>清空标注</button>
+              </div>
+            </div>
+
+            <div className="glass p-4" style={{ background: "oklch(0.97 0.01 180 / 0.025)" }}>
+              <h3 className="eyebrow mb-2">教练说明</h3>
+              <ul className="text-xs text-muted-foreground space-y-1.5 list-disc pl-4">
+                <li>箭头工具：在球场上拖动表示跑位/传球方向。</li>
+                <li>区域框：拖出需要重点控制或保护的区域。</li>
+                <li>文字标注：点击放置；橡皮擦点击标注删除。</li>
+                <li>球员可自由拖拽，战术与阵容按队伍分别保存。</li>
+              </ul>
+            </div>
+
+            <div className="glass p-4" style={{ background: "oklch(0.97 0.01 180 / 0.025)" }}>
+              <h3 className="eyebrow mb-2">替补 / 未上场</h3>
+              <div>
+                {reserves.length ? reserves.map((p) => <span key={p.id} className="bench-chip">{p.name}</span>)
+                  : <span className="bench-chip">暂无候补</span>}
+              </div>
+            </div>
+          </aside>
+        )}
+      </div>
+    </>
+  );
 
   // Inject stadium hero image as body background variable
   useEffect(() => {
@@ -593,9 +761,9 @@ function App() {
   }, []);
 
   return (
-    <div className="min-h-screen">
+    <div className={`min-h-screen ${isPitchFocus ? "pitch-focus-page" : ""}`}>
       {/* Sponsor / club banner */}
-      <div className="sponsor-bar">
+      {!isPitchFocus && <div className="sponsor-bar">
         <div className="sponsor-bar-inner">
           <span className="sponsor-label">官方赞助 · OFFICIAL SPONSOR</span>
           <a href="http://www.gzjiy.com/" target="_blank" rel="noreferrer" className="sponsor-link">
@@ -604,10 +772,10 @@ function App() {
           </a>
           <span className="sponsor-meta">广州 · 消防车研发制造</span>
         </div>
-      </div>
+      </div>}
 
       {/* Header */}
-      <header className="header-hero">
+      {!isPitchFocus && <header className="header-hero">
         <div className="header-row">
           <div className="club-id">
             <div className="club-crest" aria-hidden>
@@ -679,10 +847,10 @@ function App() {
             </div>
           </div>
         </div>
-      </header>
+      </header>}
 
-      <main className="px-4 md:px-8 pt-[36vh] md:pt-[44vh] pb-12 max-w-[1400px] mx-auto w-full flex flex-col gap-6">
-        <StepperNav step={step} setStep={setStep} completed={completed} />
+      <main className={isPitchFocus ? "pitch-focus-main" : "px-4 md:px-8 pt-[36vh] md:pt-[44vh] pb-12 max-w-[1400px] mx-auto w-full flex flex-col gap-6"}>
+        {!isPitchFocus && <StepperNav step={step} setStep={setStep} completed={completed} />}
 
         {/* IMPORT */}
         {step === "import" && (
@@ -850,189 +1018,37 @@ function App() {
 
         {/* LINEUP */}
         {step === "lineup" && (
-          <section className="glass p-5 md:p-7">
-            <div className="section-head">
-              <div>
-                <h2>阵容 · 战术板</h2>
-                <p>选择阵型一键排布或自由拖拽。手机/平板请点击球场右下角的 <strong>放大</strong> 按钮，进入全屏模式后再使用战术工具，避免误触。</p>
-              </div>
-              <div className="flex gap-2 flex-wrap">
-                {Object.keys(formationSlots).map((f) => (
-                  <button key={f} className="btn btn-ghost" onClick={() => applyFormation(f)}>{f}</button>
-                ))}
-                <button className="btn btn-ghost" onClick={resetPositions}>自由重排</button>
-                {lineupComplete && (
-                  <button className="btn btn-primary" onClick={exportPitchImage} disabled={exporting}>
-                    {exporting ? "导出中…" : "📸 导出阵容图"}
-                  </button>
-                )}
-              </div>
-            </div>
-
-            <div className="flex gap-2 mb-4 flex-wrap">
-              {TEAMS.map((t) => (
-                <button
-                  key={t}
-                  className={`team-tab ${teamMeta[t].cls} ${currentTeam === t ? "is-active" : ""}`}
-                  onClick={() => setCurrentTeam(t)}
-                >
-                  {teamMeta[t].name}
-                </button>
-              ))}
-            </div>
-
-            <div className={`grid ${pitchFull ? "" : "lg:grid-cols-[1.6fr_1fr]"} gap-5`}>
-              {/* Pitch */}
-              <div
-                ref={pitchWrapRef}
-                className={`pitch-wrap ${currentTeamCls} ${pitchFull ? "is-fullscreen" : ""} ${interactLocked ? "is-locked" : ""}`}
-              >
-                <div className="pitch-stage">
-                  <div
-                    ref={pitchRef}
-                    className="pitch"
-                    onPointerDown={onPitchPointerDown}
-                    onPointerMove={onPitchPointerMove}
-                    onPointerUp={onPitchPointerUp}
-                  >
-                    <PitchLines />
-                    {board.annotations.map(renderAnnotation)}
-                    {drawing && renderAnnotation({ ...drawing, id: "_d" })}
-                    {tokens.map(({ p, pos, isGk, id }) => (
-                      <div
-                        key={id}
-                        className={`player-token ${currentTeamCls} ${isGk ? "is-gk" : ""}`}
-                        style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: "translate(-50%, -50%)" }}
-                        onPointerDown={(e) => onTokenPointerDown(e, id)}
-                      >
-                        <div className="disc">{isGk ? "GK" : p.name.slice(0, 2)}</div>
-                        <div className="label">{p.name}</div>
-                      </div>
-                    ))}
-                  </div>
+          pitchFull ? (
+            <section className="pitch-focus-screen">
+              {pitchBoard}
+            </section>
+          ) : (
+            <section className="glass p-5 md:p-7">
+              <div className="section-head">
+                <div>
+                  <h2>阵容 · 战术板</h2>
+                  <p>选择阵型一键排布或自由拖拽。手机/平板请点击球场右下角的 <strong>放大</strong> 按钮，进入全屏模式后再使用战术工具，避免误触。</p>
                 </div>
-
-                {interactLocked && (
-                  <div className="pitch-lock-hint">点击右下角 ⤢ 放大球场以使用战术工具</div>
-                )}
-
-                <button
-                  type="button"
-                  className="pitch-fullscreen-btn"
-                  onClick={() => setPitchFull((v) => !v)}
-                  aria-label={pitchFull ? "退出全屏" : "放大球场"}
-                  title={pitchFull ? "退出全屏" : "放大球场"}
-                >
-                  {pitchFull ? "✕" : "⤢"}
-                </button>
-
-                {pitchFull && (
-                  <div className="pitch-mobile-toolbar">
-                    <div className="pmt-tools">
-                      {([
-                        ["attack", "进攻", "在球场拖动 · 表示传球或跑位方向"],
-                        ["defense", "防守", "在球场拖动 · 表示防守回收路径"],
-                        ["area", "区域", "拖出矩形 · 标记控制/保护区域"],
-                        ["note", "标注", "点击放置文字提示"],
-                        ["erase", "擦除", "点击已有标注将其删除"],
-                      ] as [Tool, string, string][]).map(([id, label, desc]) => (
-                        <button key={id}
-                          className={`pmt-btn ${tool === id ? "is-active" : ""}`}
-                          onClick={() => setTool(id)}>
-                          <span className="pmt-label">{label}</span>
-                          <span className="pmt-desc">{desc}</span>
-                        </button>
-                      ))}
-                    </div>
-                    <div className="pmt-row">
-                      <input
-                        className="input"
-                        style={{ flex: 1, fontSize: 12, padding: "8px 10px" }}
-                        placeholder="标注文字（如：边路推进）"
-                        value={annotationText}
-                        onChange={(e) => setAnnotationText(e.target.value)}
-                      />
-                      <button className="btn btn-ghost" style={{ padding: "8px 10px" }} onClick={() => {
-                        setTactics((prev) => ({
-                          ...prev, [currentTeam]: { ...prev[currentTeam], annotations: prev[currentTeam].annotations.slice(0, -1) },
-                        }));
-                      }}>撤销</button>
-                      <button className="btn btn-ghost" style={{ padding: "8px 10px" }} onClick={() => setTactics((p) => ({ ...p, [currentTeam]: { ...p[currentTeam], annotations: [] } }))}>清空</button>
-                      {lineupComplete && (
-                        <button className="btn btn-primary" style={{ padding: "8px 10px" }} onClick={exportPitchImage} disabled={exporting}>
-                          {exporting ? "…" : "📸导出"}
-                        </button>
-                      )}
-                    </div>
-                  </div>
-                )}
+                <div className="flex gap-2 flex-wrap">
+                  {Object.keys(formationSlots).map((f) => (
+                    <button key={f} className="btn btn-ghost" onClick={() => applyFormation(f)}>{f}</button>
+                  ))}
+                  <button className="btn btn-ghost" onClick={resetPositions}>自由重排</button>
+                  {lineupComplete && (
+                    <button className="btn btn-primary" onClick={exportPitchImage} disabled={exporting}>
+                      {exporting ? "导出中…" : "📸 导出阵容图"}
+                    </button>
+                  )}
+                </div>
               </div>
 
-              {/* Tactics panel */}
-              {!pitchFull && (
-              <aside className="flex flex-col gap-4">
-                <div className="glass p-4" style={{ background: "oklch(0.97 0.01 180 / 0.025)" }}>
-                  <h3 className="eyebrow mb-3">战术工具 · {teamMeta[currentTeam].name}</h3>
-                  <div className="grid grid-cols-3 gap-2">
-                    {([
-                      ["attack", "进攻箭头"],
-                      ["defense", "防守回收"],
-                      ["area", "区域框"],
-                      ["note", "文字标注"],
-                      ["erase", "橡皮擦"],
-                    ] as [Tool, string][]).map(([id, label]) => (
-                      <button key={id}
-                        className={`tool-btn ${tool === id ? "is-active" : ""}`}
-                        onClick={() => setTool(id)}>{label}</button>
-                    ))}
-                  </div>
-                  <label className="block mt-3">
-                    <span className="text-xs text-muted-foreground mb-1.5 block">标注文字</span>
-                    <input
-                      className="input"
-                      placeholder="例：边路推进、弱侧包抄、回收保护"
-                      value={annotationText}
-                      onChange={(e) => setAnnotationText(e.target.value)}
-                      onBlur={() => setTactics((prev) => ({ ...prev, [currentTeam]: { ...prev[currentTeam], label: annotationText } }))}
-                    />
-                  </label>
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    <button className="btn btn-ghost" onClick={() => {
-                      setTactics((prev) => ({
-                        ...prev, [currentTeam]: { ...prev[currentTeam], annotations: prev[currentTeam].annotations.slice(0, -1) },
-                      }));
-                    }}>撤销</button>
-                    <button className="btn btn-ghost" onClick={exportBoard}>复制战术</button>
-                    <button className="btn btn-ghost" onClick={importBoard}>导入战术</button>
-                    <button className="btn btn-ghost" onClick={() => setTactics((p) => ({ ...p, [currentTeam]: { ...p[currentTeam], annotations: [] } }))}>清空标注</button>
-                  </div>
-                </div>
-
-                <div className="glass p-4" style={{ background: "oklch(0.97 0.01 180 / 0.025)" }}>
-                  <h3 className="eyebrow mb-2">教练说明</h3>
-                  <ul className="text-xs text-muted-foreground space-y-1.5 list-disc pl-4">
-                    <li>箭头工具：在球场上拖动表示跑位/传球方向。</li>
-                    <li>区域框：拖出需要重点控制或保护的区域。</li>
-                    <li>文字标注：点击放置；橡皮擦点击标注删除。</li>
-                    <li>球员可自由拖拽，战术与阵容按队伍分别保存。</li>
-                  </ul>
-                </div>
-
-                <div className="glass p-4" style={{ background: "oklch(0.97 0.01 180 / 0.025)" }}>
-                  <h3 className="eyebrow mb-2">替补 / 未上场</h3>
-                  <div>
-                    {reserves.length ? reserves.map((p) => <span key={p.id} className="bench-chip">{p.name}</span>)
-                      : <span className="bench-chip">暂无候补</span>}
-                  </div>
-                </div>
-              </aside>
-              )}
-            </div>
-          </section>
+              {pitchBoard}
+            </section>
+          )
         )}
       </main>
 
-      <footer className="site-footer">
+      {!isPitchFocus && <footer className="site-footer">
         <div className="flex items-center justify-center gap-3 flex-wrap">
           <span>济援专汽 · 周五嘉年华</span>
           <span className="dot-sep">·</span>
@@ -1040,7 +1056,7 @@ function App() {
           <span className="dot-sep">·</span>
           <span>Echte Liebe · 真爱足球</span>
         </div>
-      </footer>
+      </footer>}
     </div>
   );
 }
