@@ -839,7 +839,7 @@ function App() {
       </main>
 
       <footer className="px-4 md:px-8 pb-6 pt-2 text-center text-xs text-muted-foreground">
-        战术台 · 业余 8 人制 · 适配微信 H5
+        Bernabéu Tactics · 8 人制 · ¡Hala Madrid! · 适配微信 H5
       </footer>
     </div>
   );
