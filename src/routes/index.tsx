@@ -853,14 +853,19 @@ function App() {
           <section className="glass p-5 md:p-7">
             <div className="section-head">
               <div>
-                <h2>横屏阵容 · 战术板</h2>
-                <p>选择阵型一键排布或自由拖拽。手机请横屏使用以获得最佳体验。</p>
+                <h2>阵容 · 战术板</h2>
+                <p>选择阵型一键排布或自由拖拽。手机/平板请点击球场右下角的 <strong>放大</strong> 按钮，进入全屏模式后再使用战术工具，避免误触。</p>
               </div>
               <div className="flex gap-2 flex-wrap">
                 {Object.keys(formationSlots).map((f) => (
                   <button key={f} className="btn btn-ghost" onClick={() => applyFormation(f)}>{f}</button>
                 ))}
                 <button className="btn btn-ghost" onClick={resetPositions}>自由重排</button>
+                {lineupComplete && (
+                  <button className="btn btn-primary" onClick={exportPitchImage} disabled={exporting}>
+                    {exporting ? "导出中…" : "📸 导出阵容图"}
+                  </button>
+                )}
               </div>
             </div>
 
