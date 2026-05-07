@@ -193,8 +193,8 @@ function App() {
   const [captains, setCaptains] = useState<Record<TeamId, string | null>>({ red: null, green: null, white: null });
   const [draftOrder, setDraftOrder] = useState<TeamId[]>(["red", "green", "white"]);
   const [gkOrder, setGkOrder] = useState<TeamId[]>(["red", "green", "white"]);
-  const [draftOrderText, setDraftOrderText] = useState("red,green,white");
-  const [gkOrderText, setGkOrderText] = useState("red,green,white");
+  const [draftOrderText, setDraftOrderText] = useState("红,绿,白");
+  const [gkOrderText, setGkOrderText] = useState("红,绿,白");
 
   const [teams, setTeams] = useState(emptyTeams);
   const [draftQueue, setDraftQueue] = useState<{ team: TeamId; type: "player" | "gk" }[]>([]);
