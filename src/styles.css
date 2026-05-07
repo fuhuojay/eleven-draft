@@ -99,12 +99,12 @@
     min-height: 100vh;
     position: relative;
   }
-  /* Tinted overlay so content stays readable */
+  /* Tinted overlay so content stays readable — kept light to reveal tifo */
   body::before {
     content: "";
     position: fixed; inset: 0; pointer-events: none; z-index: 0;
     background:
-      linear-gradient(180deg, oklch(0.05 0.005 90 / 0.35) 0%, oklch(0.05 0.005 90 / 0.7) 70%, oklch(0.04 0.005 90 / 0.92) 100%);
+      linear-gradient(180deg, oklch(0.05 0.005 90 / 0.05) 0%, oklch(0.05 0.005 90 / 0.25) 45%, oklch(0.04 0.005 90 / 0.78) 100%);
   }
   /* Subtle yellow scanline / floodlight grid */
   body::after {
@@ -126,12 +126,13 @@
   color: var(--color-muted-foreground);
 }
 
-/* Glass panel */
+/* Glass panel — translucent so the tifo background shows through */
 .glass {
-  background: linear-gradient(180deg, oklch(0.97 0.01 180 / 0.04), oklch(0.97 0.01 180 / 0.015));
-  border: 1px solid var(--color-border);
+  background: linear-gradient(180deg, oklch(0.08 0.005 90 / 0.55), oklch(0.05 0.005 90 / 0.45));
+  border: 1px solid oklch(0.86 0.18 95 / 0.22);
   border-radius: 14px;
-  backdrop-filter: blur(14px);
+  backdrop-filter: blur(10px) saturate(1.1);
+  -webkit-backdrop-filter: blur(10px) saturate(1.1);
   box-shadow: var(--shadow-elevated);
 }
 
@@ -563,8 +564,7 @@
   content: "";
   position: absolute; inset: 0;
   background:
-    radial-gradient(ellipse 60% 80% at 100% 50%, oklch(0.86 0.18 95 / 0.12), transparent 70%),
-    linear-gradient(180deg, transparent, oklch(0 0 0 / 0.4));
+    radial-gradient(ellipse 60% 80% at 100% 50%, oklch(0.86 0.18 95 / 0.08), transparent 70%);
   pointer-events: none;
 }
 .header-row {

@@ -585,7 +585,7 @@ function App() {
         </div>
       </header>
 
-      <main className="px-4 md:px-8 pt-6 pb-12 max-w-[1400px] mx-auto w-full flex flex-col gap-6">
+      <main className="px-4 md:px-8 pt-[36vh] md:pt-[44vh] pb-12 max-w-[1400px] mx-auto w-full flex flex-col gap-6">
         <StepperNav step={step} setStep={setStep} completed={completed} />
 
         {/* IMPORT */}
