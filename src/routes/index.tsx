@@ -869,8 +869,14 @@ function App() {
         )}
       </main>
 
-      <footer className="px-4 md:px-8 pb-6 pt-2 text-center text-xs text-muted-foreground">
-        Bernabéu Tactics · 8 人制 · ¡Hala Madrid! · 适配微信 H5
+      <footer className="site-footer">
+        <div className="flex items-center justify-center gap-3 flex-wrap">
+          <span>济援专汽 · 周五嘉年华</span>
+          <span className="dot-sep">·</span>
+          <a href="http://www.gzjiy.com/" target="_blank" rel="noreferrer">www.gzjiy.com</a>
+          <span className="dot-sep">·</span>
+          <span>Echte Liebe · 真爱足球</span>
+        </div>
       </footer>
     </div>
   );
