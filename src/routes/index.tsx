@@ -188,6 +188,9 @@ function App() {
   const [completed, setCompleted] = useState<Set<StepId>>(new Set());
 
   const [relayText, setRelayText] = useState("");
+  const [matchTime, setMatchTime] = useState("周五 19:00");
+  const [matchVenue, setMatchVenue] = useState("洋湖一号场");
+  const [editingMatch, setEditingMatch] = useState(false);
   const [players, setPlayers] = useState<Player[]>([]);
 
   const [captains, setCaptains] = useState<Record<TeamId, string | null>>({ red: null, green: null, white: null });
