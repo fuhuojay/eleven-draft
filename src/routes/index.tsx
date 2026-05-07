@@ -429,6 +429,7 @@ function App() {
   };
 
   const onTokenPointerDown = (e: React.PointerEvent, id: string) => {
+    if (interactLocked) return;
     e.stopPropagation();
     const el = e.currentTarget as HTMLElement;
     el.setPointerCapture(e.pointerId);
@@ -465,6 +466,7 @@ function App() {
   };
 
   const onPitchPointerDown = (e: React.PointerEvent) => {
+    if (interactLocked) return;
     const target = e.target as HTMLElement;
     if (target.closest(".player-token")) return;
     const mark = target.closest<HTMLElement>(".board-mark");
