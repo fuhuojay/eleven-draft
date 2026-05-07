@@ -887,27 +887,29 @@ function App() {
                 ref={pitchWrapRef}
                 className={`pitch-wrap ${currentTeamCls} ${pitchFull ? "is-fullscreen" : ""} ${interactLocked ? "is-locked" : ""}`}
               >
-                <div
-                  ref={pitchRef}
-                  className="pitch"
-                  onPointerDown={onPitchPointerDown}
-                  onPointerMove={onPitchPointerMove}
-                  onPointerUp={onPitchPointerUp}
-                >
-                  <PitchLines />
-                  {board.annotations.map(renderAnnotation)}
-                  {drawing && renderAnnotation({ ...drawing, id: "_d" })}
-                  {tokens.map(({ p, pos, isGk, id }) => (
-                    <div
-                      key={id}
-                      className={`player-token ${currentTeamCls} ${isGk ? "is-gk" : ""}`}
-                      style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: "translate(-50%, -50%)" }}
-                      onPointerDown={(e) => onTokenPointerDown(e, id)}
-                    >
-                      <div className="disc">{isGk ? "GK" : p.name.slice(0, 2)}</div>
-                      <div className="label">{p.name}</div>
-                    </div>
-                  ))}
+                <div className={pitchFull ? "pitch-stage" : "contents"}>
+                  <div
+                    ref={pitchRef}
+                    className="pitch"
+                    onPointerDown={onPitchPointerDown}
+                    onPointerMove={onPitchPointerMove}
+                    onPointerUp={onPitchPointerUp}
+                  >
+                    <PitchLines />
+                    {board.annotations.map(renderAnnotation)}
+                    {drawing && renderAnnotation({ ...drawing, id: "_d" })}
+                    {tokens.map(({ p, pos, isGk, id }) => (
+                      <div
+                        key={id}
+                        className={`player-token ${currentTeamCls} ${isGk ? "is-gk" : ""}`}
+                        style={{ left: `${pos.x}%`, top: `${pos.y}%`, transform: "translate(-50%, -50%)" }}
+                        onPointerDown={(e) => onTokenPointerDown(e, id)}
+                      >
+                        <div className="disc">{isGk ? "GK" : p.name.slice(0, 2)}</div>
+                        <div className="label">{p.name}</div>
+                      </div>
+                    ))}
+                  </div>
                 </div>
 
                 {interactLocked && (
